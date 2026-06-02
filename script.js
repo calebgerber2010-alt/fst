@@ -1,0 +1,21 @@
+{
+    "short_name": "ScreenTimeFaker",
+    "name": "Screen Time Faker",
+    "description": "A hyper-realistic replica of the iOS screen time feature",
+    "icons": [
+      {
+        "src": "./assets/images/settings_icon_192.png",
+        "sizes": "192x192",
+        "type": "image/png"
+      },
+      {
+        "src": "./assets/images/settings_icon_512.png",
+        "sizes": "512x512",
+        "type": "image/png"
+      }
+    ],
+    "start_url": "./",
+    "display": "standalone",
+    "background_color": "#000000",
+    "theme_color": "#ffffff"
+}

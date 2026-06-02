@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>ScreenTimeFaker</title>
+    <link rel="manifest" href="./manifest.json">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #000000;
+            color: #e0e0e0;
+            overflow-x: hidden;
+        }
+        .header {
+            background-color: #000000;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        .header .back-button {
+            position: absolute;
+            left: 10px;
+            font-size: 28px;
+            color: #007aff;
+            text-decoration: none;
+            background: transparent;
+            border: none;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .header .back-button svg {
+            width: 28px;
+            height: 28px;
+        }
+        .header .back-button svg path {
+            fill: none;
+            stroke: #007aff;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+        .header .settings {
+            position: absolute;
+            left: 35px;
+            font-size: 17px;
+            color: #007aff;
+        }
+        .header .title_screentime {
+            font-size: 17px;
+            font-weight: 600;
+            color: #f0f0f5;
+            text-align: center;
+        }
+        .bar {
+            background-color: #000000;
+            height: 5px;
+            width: 100%;
+            margin: 0;
+        }
+        .phone-name {
+            font-size: 12.5px;
+            color: #8b8b8d;
+            text-align: left;
+            position: absolute;
+            top: -24px;
+            left: 15px;
+            margin-right: 20px;
+        }
+        /* "Daily Average" */
+        .daily-average {
+            font-size: 17px;
+            color: #8b8b8d;
+            position: absolute;
+            top: 15px;
+            left: 15px;
+        }
+        /* Actual time */
+        .average-time {
+            font-size: 36px;
+            color: #ffffff;
+            position: absolute;
+            top: 35px;
+            left: 15px;
+        }
+        .rounded-rectangle {
+            background-color: #1c1c1e;
+            border-radius: 8px;
+            padding: 20px;
+            width: calc(100% - 30px);
+            margin: 40px 15px;
+            height: 265px;
+            position: relative;
+            box-sizing: border-box;
+            top: 15px;
+        }
+        .details-page-button {
+            position: absolute;
+            top: calc(100% - 42px);
+            left: 0;
+            width: 100%;
+            height: 42px;
+            background: transparent;
+            z-index: 1;
+            text-decoration: none;
+            border-bottom-left-radius: 8px;
+            border-bottom-right-radius: 8px;
+        }
+        .details-page-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.15);
+            z-index: -1;
+            transition: opacity 0.2s ease;
+            opacity: 0;
+            border-bottom-left-radius: 8px;
+            border-bottom-right-radius: 8px;
+        }
+        .details-page-button:active::before {
+            opacity: 1;
+        }
+        .grid {
+            position: absolute;
+            top: 60px;
+            left: 15px;
+            right: 15px;
+            bottom: 20px;
+            pointer-events: none;
+            width: calc(100% - 30px);
+            height: auto;
+            overflow: visible !important;
+        }
+        .vertical-line {
+            width: 0.1px;
+            height: 100%;
+            stroke: #4a4a4a;
+            stroke-width: 0.1px;
+            stroke-dasharray: 1, 1;
+        }
+        .horizontal-line {
+            height: 0.1px;
+            width: 100%;
+            stroke: #4a4a4a;
+            stroke-width: 0.1px;
+        }
+        .vertical-line:nth-of-type(9) {
+            right: 0;
+        }
+        .horizontal-line:nth-of-type(5) {
+            bottom: 0;
+        }
+        .day-label {
+            font-size: 4px;
+            fill: #4a4a4a;
+            text-anchor: start;
+        }
+        .interval-label {
+            font-size: 4px;
+            fill: #4a4a4a;
+            text-anchor: start;
+        }
+        .average-text {
+            font-size: 4px;
+            fill: #41c85c;
+            text-anchor: start;
+        }
+        .average-line {
+            stroke: #41c85c;
+            stroke-width: 0.4px;
+            stroke-dasharray: 1, 1.8;
+        }
+        .info-text {
+            font-size: 5.5px;
+            fill: #ffffff;
+            text-anchor: start;
+        }
+        .arrow-icon {
+            fill: none;
+            stroke: #4a4a4a;
+            stroke-width: 2.5;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+        .time-display {
+            font-size: 13px;
+            color: #8b8b8d;
+            text-align: left;
+            position: absolute;
+            top: 275px;
+            left: 15px;
+            margin-right: 20px;
+        }
+        .screenshot-container {
+        position: absolute;
+        top: 300px;
+        left: -15px;
+        width: calc(100% + 30px);
+        height: auto;
+        box-sizing: border-box;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        }
+        .screenshot-image {
+            width: 100%;
+            height: auto;
+            box-sizing: border-box;
+        }
+        .secret-button {
+            position: absolute;
+            top: 1320px;
+            left: 25px;
+            width: 255px;
+            height: 30px;
+            z-index: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <a href="#" class="back-button">
+            <svg viewBox="0 0 24 24" class="icon">
+                <path d="M15 18l-6-6 6-6" stroke="#007aff" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </a>
+        <div class="settings">Settings</div>
+        <div class="title_screentime">Screen Time</div>
+        <div class="secret-button" id="secret-button"></div>
+    </div>
+    <div class="bar"></div>
+    <div class="rounded-rectangle">
+    <div class="details-page-button" onclick="window.location.href='details.html';"></div>
+    <div class="daily-average">Daily Average</div>
+    <div class="average-time" id="average-time">0 m</div>
+    <div class="phone-name" id="phone-name">APPLE IPHONE</div>
+    
+    <!-- Grid -->
+    <svg class="grid" viewBox="0 0 105 50" width="100%" height="100%">
+        <!-- Vertical lines -->
+        <line x1="0" y1="10" x2="0" y2="45" class="vertical-line"/>
+        <line x1="13.75" y1="10" x2="13.75" y2="45" class="vertical-line"/>
+        <line x1="27.5" y1="10" x2="27.5" y2="45" class="vertical-line"/>
+        <line x1="41.25" y1="10" x2="41.25" y2="45" class="vertical-line"/>
+        <line x1="55" y1="10" x2="55" y2="45" class="vertical-line"/>
+        <line x1="68.75" y1="10" x2="68.75" y2="45" class="vertical-line"/>
+        <line x1="82.5" y1="10" x2="82.5" y2="45" class="vertical-line"/>
+        <line x1="96.25" y1="10" x2="96.25" y2="45" class="vertical-line"/>
+    
+        <!-- Horizontal lines -->
+        <line x1="0" y1="10" x2="96.25" y2="10" class="horizontal-line"/>
+        <line x1="0" y1="17" x2="96.25" y2="17" class="horizontal-line"/>
+        <line x1="0" y1="24" x2="96.25" y2="24" class="horizontal-line"/>
+        <line x1="0" y1="31" x2="96.25" y2="31" class="horizontal-line"/>
+        <line x1="0" y1="38" x2="96.25" y2="38" class="horizontal-line"/>
+        
+        <!-- See All App & Website Activity -->
+        <line x1="0" y1="52" x2="109.75" y2="52" class="horizontal-line"/>
+        <text x="0" y="59.75" class="info-text">See All App & Website Activity</text>
+        <path d="M0 0 L6 6 L0 12" class="arrow-icon" transform="translate(103, 56) scale(0.27)"/>
+    
+        <!-- Day labels -->
+        <text x="1.5" y="44" class="day-label">S</text>
+        <text x="15.25" y="44" class="day-label">M</text>
+        <text x="29" y="44" class="day-label">T</text>
+        <text x="42.75" y="44" class="day-label">W</text>
+        <text x="56.5" y="44" class="day-label">T</text>
+        <text x="70.25" y="44" class="day-label">F</text>
+        <text x="84" y="44" class="day-label">S</text>
+
+        <!-- Interval labels -->
+        <g id="interval-labels"></g>
+
+        <!-- Container for bars -->
+        <g id="bars-container"></g>
+
+        <!-- Average line container -->
+        <g id="average-line-container"></g>
+    </svg>
+    <div id="time-display" class="time-display"></div>
+
+    <!-- Screenshot below main content -->
+    <div class="screenshot-container">
+        <img src="assets/images/main-page_bottom.png" alt="Screenshot" class="screenshot-image">
+    </div>
+</div>
+    <script src="./script.js"></script>
+    <script>
+        // On startup
+        window.onload = function() {
+            loadData();
+            updateTime();
+        };
+
+        // Secret Button Triple Click
+        let clickCount = 0;
+        const secretButton = document.getElementById('secret-button');
+
+        // Update the HTML with the calculated average
+        document.addEventListener("DOMContentLoaded", () => {
+            const average = calculateWeeklyAverage(screenTimeData);
+            document.getElementById('average-time').textContent = formatTime(average);
+
+            const savedPhoneName = phoneNameUpper || 'Apple iPhone';
+            updateDetails(savedPhoneName);
+
+            // Update interval labels based on the average time, then render the bars properly
+            updateIntervalLabels(screenTimeData);
+            renderBars(screenTimeData);
+            renderAverageLine(screenTimeData, currentLabelType);
+        });
+
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/service-worker.js')
+                .then(function(registration) {
+                    console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                })
+                .catch(function(error) {
+                    console.log('ServiceWorker registration failed: ', error);
+                });
+        }
+
+        secretButton.addEventListener('click', () => {
+            clickCount++;
+            if (clickCount === 3) {
+                window.location.href = 'input.html';
+            }
+            setTimeout(() => {
+                clickCount = 0;
+            }, 500);
+        });
+    </script>
+</body>
+</html>

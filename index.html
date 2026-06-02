@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="script.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Activity Details</title>
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #000000;
+            color: #e0e0e0;
+            overflow-x: hidden;
+        }
+        .header {
+            background-color: #000000;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        .header .back-button {
+            position: absolute;
+            left: 10px;
+            font-size: 28px;
+            color: #007aff;
+            text-decoration: none;
+            background: transparent;
+            border: none;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .header .back-button svg {
+            width: 28px;
+            height: 28px;
+        }
+        .header .back-button svg path {
+            fill: none;
+            stroke: #007aff;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+        .header .screen-time {
+            position: absolute;
+            left: 35px;
+            font-size: 17px;
+            color: #007aff;
+        }
+        .header .screen-time-button {
+            position: absolute;
+            top: 10px;
+            left: 15px;
+            width: 115px;
+            height: 20px;
+            background: transparent;
+            z-index: 1;
+            text-decoration: none;
+        }
+        .header .title {
+            font-size: 17px;
+            font-weight: 600;
+            color: #f0f0f5;
+            text-align: center;
+        }
+        .toggle-container {
+            display: flex;
+            position: relative;
+            width: 300px;
+            height: 30px;
+            margin: 20px auto;
+            border-radius: 8px;
+            overflow: hidden;
+            background-color: #1c1c1e;
+            padding: 2px;
+        }
+
+        .toggle-option {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            position: relative;
+            z-index: 1;
+            transition: color 0.3s ease;
+        }
+        .week-option {
+            background-color: #1c1c1e;
+            border-radius: 8px 0px 0px 8px;
+        }
+        .day-option {
+            background-color: #1c1c1e;
+            border-radius: 0px 8px 8px 0px;
+        }
+        .highlight {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: calc(50% - 4px);
+            height: calc(100% - 4px);
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 8px;
+            transition: transform 0.3s ease, width 0.3s ease;
+            z-index: 2;
+        }
+        .screen-time-label {
+            font-size: 12.5px;
+            color: #8b8b8d;
+            text-align: left;
+            position: absolute;
+            top: -24px;
+            left: 15px;
+            margin-right: 20px;
+        }
+        /* "Daily Average" or "Today, [month] [date]" */
+        .current-data {
+            font-size: 17px;
+            color: #8b8b8d;
+            position: absolute;
+            top: 15px;
+            left: 15px;
+        }
+        /* Actual time displayed*/
+        .current-data-time {
+            font-size: 36px;
+            color: #ffffff;
+            position: absolute;
+            top: 35px;
+            left: 15px;
+        }
+        .rounded-rectangle {
+            background-color: #1c1c1e;
+            border-radius: 8px;
+            padding: 20px;
+            width: calc(100% - 30px);
+            margin: 40px 15px;
+            height: 300px;
+            position: relative;
+            box-sizing: border-box;
+            top: 15px;
+        }
+        .grid {
+            position: absolute;
+            top: 60px;
+            left: 15px;
+            right: 15px;
+            bottom: 20px;
+            pointer-events: none;
+            width: calc(100% - 30px);
+            height: auto;
+            overflow: visible !important;
+        }
+        .extra-grid {
+            position: absolute;
+            top: 60px;
+            left: 15px;
+            right: 15px;
+            bottom: 20px;
+            pointer-events: none;
+            width: calc(100% - 30px);
+            height: auto;
+            overflow: visible !important;
+        }
+        .vertical-line {
+            width: 0.1px;
+            height: 100%;
+            stroke: #4a4a4a;
+            stroke-width: 0.1px;
+            stroke-dasharray: 1, 1;
+        }
+        .horizontal-line {
+            height: 0.1px;
+            width: 100%;
+            stroke: #4a4a4a;
+            stroke-width: 0.1px;
+        }
+        .vertical-line:nth-of-type(9) {
+            right: 0;
+        }
+        .horizontal-line:nth-of-type(5) {
+            bottom: 0;
+        }
+        .day-label {
+            font-size: 4px;
+            fill: #4a4a4a;
+            text-anchor: start;
+        }
+        .interval-label {
+            font-size: 4px;
+            fill: #4a4a4a;
+            text-anchor: start;
+        }
+        .average-text {
+            font-size: 4px;
+            fill: #41c85c;
+            text-anchor: start;
+        }
+        .average-line {
+            stroke: #41c85c;
+            stroke-width: 0.4px;
+            stroke-dasharray: 1, 1.8;
+        }
+        .time-display {
+            font-size: 13px;
+            color: #8b8b8d;
+            text-align: left;
+            position: absolute;
+            left: 15px;
+            bottom: -25px;
+            margin-right: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <a href="#" class="back-button">
+            <svg viewBox="0 0 24 24" class="icon">
+                <path d="M15 18l-6-6 6-6" stroke="#007aff" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </a>
+        <div class="screen-time">Screen Time</div>
+        <div class="screen-time-button" onclick="window.location.href='index.html';"></div>
+        <div class="title" id="title">Apple iPhone</div>
+    </div>
+
+    <!-- Week/Day toggle -->
+    <div class="toggle-container">
+        <div class="highlight" id="highlight"></div>
+        <div class="toggle-option week-option" data-option="week" rounded-rectangle-height="300px">Week</div>
+        <div class="toggle-option day-option" data-option="day" rounded-rectangle-height="395px">Day</div>
+    </div>
+
+    <div class="rounded-rectangle" id="roundedRectangle">
+        <div class="screen-time-label">SCREEN TIME</div>
+        <div class="current-data">Daily Average</div>
+        <div class="current-data-time" id="current-data-time">0 m</div>
+
+        <!-- Grid -->
+    <svg class="grid" viewBox="0 0 105 50" width="100%" height="100%">
+        <!-- Vertical lines -->
+        <line x1="0" y1="10" x2="0" y2="45" class="vertical-line"/>
+        <line x1="13.75" y1="10" x2="13.75" y2="45" class="vertical-line"/>
+        <line x1="27.5" y1="10" x2="27.5" y2="45" class="vertical-line"/>
+        <line x1="41.25" y1="10" x2="41.25" y2="45" class="vertical-line"/>
+        <line x1="55" y1="10" x2="55" y2="45" class="vertical-line"/>
+        <line x1="68.75" y1="10" x2="68.75" y2="45" class="vertical-line"/>
+        <line x1="82.5" y1="10" x2="82.5" y2="45" class="vertical-line"/>
+        <line x1="96.25" y1="10" x2="96.25" y2="45" class="vertical-line"/>
+    
+        <!-- Horizontal lines for intervals -->
+        <line x1="0" y1="10" x2="96.25" y2="10" class="horizontal-line"/>
+        <line x1="0" y1="17" x2="96.25" y2="17" class="horizontal-line"/>
+        <line x1="0" y1="24" x2="96.25" y2="24" class="horizontal-line"/>
+        <line x1="0" y1="31" x2="96.25" y2="31" class="horizontal-line"/>
+        <line x1="0" y1="38" x2="96.25" y2="38" class="horizontal-line"/>
+    
+        <!-- Day labels -->
+        <text x="1.5" y="44" class="day-label">S</text>
+        <text x="15.25" y="44" class="day-label">M</text>
+        <text x="29" y="44" class="day-label">T</text>
+        <text x="42.75" y="44" class="day-label">W</text>
+        <text x="56.5" y="44" class="day-label">T</text>
+        <text x="70.25" y="44" class="day-label">F</text>
+        <text x="84" y="44" class="day-label">S</text>
+
+        <!-- Interval labels -->
+        <g id="interval-labels"></g>
+    </svg>
+    <!-- Extra grid beneath normal grid, only in day mode -->
+    <svg class="extra-grid" viewBox="0 0 105 50" width="100%" height="100%" style="display: none;">
+        <!-- Vertical lines -->
+        <line x1="0" y1="60" x2="0" y2="95" class="vertical-line"/>
+        <line x1="24.0625" y1="60" x2="24.0625" y2="95" class="vertical-line"/>
+        <line x1="48.125" y1="60" x2="48.125" y2="95" class="vertical-line"/>
+        <line x1="72.1875" y1="60" x2="72.1875" y2="95" class="vertical-line"/>
+        <line x1="96.25" y1="60" x2="96.25" y2="95" class="vertical-line"/>
+    
+        <!-- Horizontal lines for intervals -->
+        <line x1="0" y1="60" x2="96.25" y2="60" class="horizontal-line"/>
+        <line x1="0" y1="67" x2="96.25" y2="67" class="horizontal-line"/>
+        <line x1="0" y1="74" x2="96.25" y2="74" class="horizontal-line"/>
+        <line x1="0" y1="81" x2="96.25" y2="81" class="horizontal-line"/>
+        <line x1="0" y1="88" x2="96.25" y2="88" class="horizontal-line"/>
+
+        <!-- Interval labels -->
+        <text x="98" y="61.5" class="interval-label">60m</text>
+        <text x="98" y="75.5" class="interval-label">30m</text>
+        <text x="98" y="89.5" class="interval-label">0</text>
+
+        <!-- Time labels -->
+        <text x="1.5" y="94" class="day-label">12 AM</text>
+        <text x="25.5625" y="94" class="day-label">6 AM</text>
+        <text x="49.625" y="94" class="day-label">12 PM</text>
+        <text x="73.6875" y="94" class="day-label">6 PM</text>
+    </svg>
+    <div id="time-display" class="time-display"></div>
+</div>
+    <script src="./script.js"></script>
+    <script>
+        // On startup
+        window.onload = function() {
+            updateTime();
+        };
+
+        document.addEventListener('DOMContentLoaded', function() {
+            updateCurrentData();
+
+            const savedPhoneName = localStorage.getItem('phoneName') || 'Apple iPhone';
+
+            updateDetails(savedPhoneName);
+            
+            const highlight = document.getElementById('highlight');
+            const options = document.querySelectorAll('.toggle-option');
+            const container = document.querySelector('.toggle-container');
+            const totalOptions = options.length;
+            const roundedRectangle = document.getElementById('roundedRectangle');
+
+            // Set initial position of highlight and height of rounded rectangle
+            const setHighlightAndHeight = (index) => {
+                const optionWidth = options[0].offsetWidth;
+                highlight.style.width = `${optionWidth}px`;
+                highlight.style.transform = `translateX(${index * optionWidth}px)`;
+                const selectedOption = options[index];
+                const newHeight = selectedOption.getAttribute('rounded-rectangle-height');
+                roundedRectangle.style.height = newHeight;
+            };
+
+            // Average Time in h's and m's
+            const average = calculateWeeklyAverage(screenTimeData);
+            document.getElementById('current-data-time').textContent = formatTime(average);
+
+            // Set initial highlight to 'week' by default
+            const defaultOptionIndex = Array.from(options).findIndex(option => option.dataset.option === 'week');
+            setHighlightAndHeight(defaultOptionIndex);
+            updateIntervalLabels(screenTimeData);
+
+            // Add click event listeners
+            options.forEach((option, index) => {
+                option.addEventListener('click', function() {
+                    viewMode = option.getAttribute('data-option');
+                    updateCurrentData();
+                    setHighlightAndHeight(index);
+                });
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Screen Time</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #121212;
+            color: #ffffff;
+            margin: 0;
+            padding: 20px;
+        }
+        .header {
+            text-align: center;
+            color: #ffffff;
+            margin-bottom: 20px;
+        }
+        .header .back {
+            position: absolute;
+            left: 35px;
+            font-size: 17px;
+            color: #007aff;
+        }
+        .header .back-button {
+            position: absolute;
+            left: 10px;
+            font-size: 28px;
+            color: #007aff;
+            text-decoration: none;
+            background: transparent;
+            border: none;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .header .back-button svg {
+            width: 28px;
+            height: 28px;
+        }
+        .header .back-button svg path {
+            fill: none;
+            stroke: #007aff;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+        input {
+            background-color: #222222;
+            color: #e0e0e0;
+            border: 1px solid #444444;
+            border-radius: 5px;
+            padding: 5px;
+            width: 100px;
+            text-align: center;
+            margin-top: 10px;
+        }
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            margin-top: 10px;
+            font-size: 16px;
+            color: #ffffff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <a href="input.html" class="back-button">
+            <svg viewBox="0 0 24 24" class="icon">
+                <path d="M15 18l-6-6 6-6" stroke="#007aff" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <div class="back">Back</div>
+        </a>
+        <div class="title">Edit Day Data</div>
+    </div>
+    <div class="button-container">
+        <label for="day-select">Select Day:</label>
+        <select id="day-select" onchange="loadDayData()">
+            <option value="Sunday">Sunday</option>
+            <option value="Monday">Monday</option>
+            <option value="Tuesday">Tuesday</option>
+            <option value="Wednesday">Wednesday</option>
+            <option value="Thursday">Thursday</option>
+            <option value="Friday">Friday</option>
+            <option value="Saturday">Saturday</option>
+        </select>
+    </div>
+        <div class="input">
+            <label for="social">Social:</label>
+            <input type="number" id="social" value="0">
+        </div>
+        <div class="input">
+            <label for="games">Games:</label>
+            <input type="number" id="games" value="0">
+        </div>
+        <div class="input">
+            <label for="entertainment">Entertainment:</label>
+            <input type="number" id="entertainment" value="0">
+        </div>
+        <div class="input">
+            <label for="creativity">Creativity:</label>
+            <input type="number" id="creativity" value="0">
+        </div>
+        <div class="input">
+            <label for="productivity">Productivity:</label>
+            <input type="number" id="productivity" value="0">
+        </div>
+        <div class="input">
+            <label for="finance">Finance:</label>
+            <input type="number" id="finance" value="0">
+        </div>
+        <div class="input">
+            <label for="education">Education:</label>
+            <input type="number" id="education" value="0">
+        </div>
+        <div class="input">
+            <label for="informationAndReading">Information & Reading:</label>
+            <input type="number" id="informationAndReading" value="0">
+        </div>
+        <div class="input">
+            <label for="healthAndFitness">Health & Fitness:</label>
+            <input type="number" id="healthAndFitness" value="0">
+        </div>
+        <div class="input">
+            <label for="utilities">Utilities:</label>
+            <input type="number" id="utilities" value="0">
+        </div>
+        <div class="input">
+            <label for="shoppingAndFood">Shopping & Food:</label>
+            <input type="number" id="shoppingAndFood" value="0">
+        </div>
+        <div class="input">
+            <label for="travel">Travel:</label>
+            <input type="number" id="travel" value="0">
+        </div>
+        <div class="input">
+            <label for="other">Other:</label>
+            <input type="number" id="other" value="0">
+        </div>
+        <button class="button" onclick="saveDayData()">Save</button>
+
+    <script src="./script.js"></script>
+    <script>
+        window.onload = function() {
+            loadDayData();
+            const day = getQueryParam('day');
+            if (day) {
+                const daySelect = document.getElementById('day-select');
+                daySelect.value = day;
+                loadDayData();
+            }
+        }
+
+        // Load data for the selected day
+        function loadDayData() {
+            const selectedDay = document.getElementById('day-select').value;
+            const dayData = JSON.parse(localStorage.getItem(selectedDay)) || {};
+
+            document.getElementById('social').value = dayData.social || 0;
+            document.getElementById('games').value = dayData.games || 0;
+            document.getElementById('entertainment').value = dayData.entertainment || 0;
+            document.getElementById('creativity').value = dayData.creativity || 0;
+            document.getElementById('productivityAndFinance').value = dayData.productivity || 0;
+            document.getElementById('education').value = dayData.education || 0;
+            document.getElementById('informationAndReading').value = dayData.informationAndReading || 0;
+            document.getElementById('healthAndFitness').value = dayData.healthAndFitness || 0;
+            document.getElementById('utilities').value = dayData.utilities || 0;
+            document.getElementById('shoppingAndFood').value = dayData.shoppingAndFood || 0;
+            document.getElementById('travel').value = dayData.travel || 0;
+            document.getElementById('other').value = dayData.other || 0;
+        }
+
+        // Save data for the selected day
+        function saveDayData() {
+            const selectedDay = document.getElementById('day-select').value;
+
+            const dayData = {
+                social: parseInt(document.getElementById('social').value) || 0,
+                games: parseInt(document.getElementById('games').value) || 0,
+                entertainment: parseInt(document.getElementById('entertainment').value) || 0,
+                creativity: parseInt(document.getElementById('creativity').value) || 0,
+                productivity: parseInt(document.getElementById('productivity').value) || 0,
+                finance: parseInt(document.getElementById('finance').value) || 0,
+                education: parseInt(document.getElementById('education').value) || 0,
+                informationAndReading: parseInt(document.getElementById('informationAndReading').value) || 0,
+                healthAndFitness: parseInt(document.getElementById('healthAndFitness').value) || 0,
+                utilities: parseInt(document.getElementById('utilities').value) || 0,
+                shoppingAndFood: parseInt(document.getElementById('shoppingAndFood').value) || 0,
+                travel: parseInt(document.getElementById('travel').value) || 0,
+                other: parseInt(document.getElementById('other').value) || 0,
+            };
+
+            // Calculate the total using values from dayData, and update screenTimeData
+            const total = Object.values(dayData).reduce((acc, value) => acc + value, 0);
+            switch(selectedDay) {
+                case 'Sunday':
+                    sundayTotal = total;
+                    localStorage.setItem('sundayTotal', sundayTotal);
+                    break;
+                case 'Monday':
+                    mondayTotal = total;
+                    localStorage.setItem('mondayTotal', sundayTotal);
+                    break;
+                case 'Tuesday':
+                    tuesdayTotal = total;
+                    localStorage.setItem('tuesdayTotal', sundayTotal);
+                    break;
+                case 'Wednesday':
+                    wednesdayTotal = total;
+                    localStorage.setItem('wednesdayTotal', sundayTotal);
+                    break;
+                case 'Thursday':
+                    thursdayTotal = total;
+                    localStorage.setItem('thursdayTotal', sundayTotal);
+                    break;
+                case 'Friday':
+                    fridayTotal = total;
+                    localStorage.setItem('fridayTotal', sundayTotal);
+                    break;
+                case 'Saturday':
+                    saturdayTotal = total;
+                    localStorage.setItem('saturdayTotal', sundayTotal);
+                    break;
+            }
+
+            // Update screenTimeData array
+            screenTimeData = [sundayTotal, mondayTotal, tuesdayTotal, wednesdayTotal, thursdayTotal, fridayTotal, saturdayTotal];
+            localStorage.setItem('screenTimeData', screenTimeData);
+
+            // Remove categories with zero values
+            for (const key in dayData) {
+                if (dayData[key] === 0) {
+                    delete dayData[key];
+                }
+            }
+
+            // Save to localStorage
+            localStorage.setItem(selectedDay, JSON.stringify(dayData));
+            
+            // Display alert with total
+            alert(`Data saved successfully!\nTotal time: ${total} \nSelected Day: ${selectedDay}`);
+        }
+    </script>    
+</body>
+</html>
